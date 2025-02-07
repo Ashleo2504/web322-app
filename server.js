@@ -1,3 +1,14 @@
+/*********************************************************************************
+WEB322 – Assignment 02
+I declare that this assignment is my own work in accordance with Seneca Academic Policy. No part * of this assignment has
+been copied manually or electronically from any other source (including 3rd party web sites) or distributed to other students.
+Name: Dev Kumar Bachchan
+Student ID: 123065237
+Date: 06-02-2025
+Cyclic Web App URL: _______________________________________________________
+GitHub Repository URL: https://github.com/Ashleo2504/web322-app.git
+********************************************************************************/
+
 const storeService = require('./store-service');
 const express = require('express');
 const path = require('path');
