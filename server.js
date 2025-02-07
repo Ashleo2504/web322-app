@@ -5,7 +5,7 @@ been copied manually or electronically from any other source (including 3rd part
 Name: Dev Kumar Bachchan
 Student ID: 123065237
 Date: 06-02-2025
-Cyclic Web App URL: _______________________________________________________
+Cyclic Web App URL: Github pages : https://ashleo2504.github.io/web322-app/
 GitHub Repository URL: https://github.com/Ashleo2504/web322-app.git
 ********************************************************************************/
 
