@@ -52,6 +52,17 @@ function getPublishedItems() {
   });
 }
 
+// 🔹 New function: Get published items by category
+function getPublishedItemsByCategory(category) {
+  return new Promise((resolve, reject) => {
+    const filteredItems = items.filter(item => item.published === true && item.category == category);
+    if (filteredItems.length === 0) {
+      return reject("no results returned");
+    }
+    resolve(filteredItems);
+  });
+}
+
 function getCategories() {
   return new Promise((resolve, reject) => {
     if (categories.length === 0) {
@@ -61,7 +72,6 @@ function getCategories() {
   });
 }
 
-// 🔹 Get items by category
 function getItemsByCategory(category) {
   return new Promise((resolve, reject) => {
     const filteredItems = items.filter(item => item.category == category);
@@ -72,7 +82,6 @@ function getItemsByCategory(category) {
   });
 }
 
-// 🔹 Get items by minimum post date
 function getItemsByMinDate(minDateStr) {
   return new Promise((resolve, reject) => {
     const minDate = new Date(minDateStr);
@@ -88,7 +97,6 @@ function getItemsByMinDate(minDateStr) {
   });
 }
 
-// 🔹 Get an item by ID
 function getItemById(id) {
   return new Promise((resolve, reject) => {
     const foundItem = items.find(item => item.id == id);
@@ -99,14 +107,21 @@ function getItemById(id) {
   });
 }
 
-// 🔹 Add a new item to the items array
 function addItem(itemData) {
   return new Promise((resolve, reject) => {
+    // Set the "published" field to true/false based on the input
     itemData.published = itemData.published ? true : false;
-    itemData.id = items.length + 1; // Set a unique ID
-    itemData.postDate = new Date().toISOString().split('T')[0]; // Set today's date
 
+    // Assign a new ID (assuming the IDs are sequential)
+    itemData.id = items.length + 1;
+
+    // Set the "postDate" to the current date in YYYY-MM-DD format
+    itemData.postDate = new Date().toISOString().split('T')[0];
+
+    // Push the new item to the items array
     items.push(itemData);
+
+    // Resolve with the item data (or you could resolve with a success message)
     resolve(itemData);
   });
 }
@@ -116,6 +131,7 @@ module.exports = {
   initialize, 
   getAllItems, 
   getPublishedItems, 
+  getPublishedItemsByCategory, // Added the new function
   getCategories, 
   addItem, 
   getItemsByCategory, 
