@@ -18,7 +18,7 @@
                 <div class="col-md-12">
                     <div class="form-group">
                         <label for="title">Item Name:</label>
-                        <input class="form-control" id="title" name="title" type="text" />
+                        <input class="form-control" id="title" name="title" type="text" required />
                     </div>
                 </div>
             </div>
@@ -26,7 +26,7 @@
                 <div class="col-md-12">
                     <div class="form-group">
                         <label for="price">Price:</label>
-                        <input class="form-control" id="price" name="price" type="text" />
+                        <input class="form-control" id="price" name="price" type="number" step="0.01" required />
                     </div>
                 </div>
             </div>
@@ -34,7 +34,7 @@
                 <div class="col-md-12">
                     <div class="form-group">
                         <label for="body">Description:</label>
-                        <textarea class="form-control" id="body" name="body" rows="15"></textarea>
+                        <textarea class="form-control" id="body" name="body" rows="15" required></textarea>
                     </div>
                 </div>
             </div>
@@ -42,13 +42,16 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="category">Category:</label>
-                        <select class="form-control" name="category" id="category">
-                            <option value="1">Home, Garden</option>
-                            <option value="2">Electronics, Computers, Video Games</option>
-                            <option value="3">Clothing</option>
-                            <option value="4">Sports & Outdoors</option>
-                            <option value="5">Pets</option>
-                        </select>
+                        {{#if categories}}
+                            <select class="form-control" name="category" id="category" required>
+                                <option value="">Select Category</option>
+                                {{#each categories}}
+                                    <option value="{{id}}">{{category}}</option>
+                                {{/each}}
+                            </select>
+                        {{else}}
+                            <div>No Categories Available</div>
+                        {{/if}}
                     </div>
                 </div>
                 <div class="col-md-6">

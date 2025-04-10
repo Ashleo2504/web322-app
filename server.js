@@ -1,24 +1,21 @@
-/*********************************************************************************
-WEB322 – Assignment 04
-I declare that this assignment is my own work in accordance with Seneca Academic Policy. No part
-* of this assignment has been copied manually or electronically from any other source (including 3rd party web sites) or distributed to other students.
-Name: Dev Kumar Bachchan
-Student ID: 123065237
-Date: 21-03-2025
-Cyclic Web App URL: https://vercel.com/ashleo2504s-projects/web322-app-qdfi
-GitHub Repository URL: https://github.com/Ashleo2504/web322-app.git
-********************************************************************************/
-
 const storeService = require('./store-service');
 const express = require('express');
 const multer = require("multer");
 const cloudinary = require('cloudinary').v2;
 const streamifier = require('streamifier');
 const path = require('path');
-const exphbs = require('express-handlebars'); // Import express-handlebars
+const exphbs = require('express-handlebars');
 
 const app = express();
 const HTTP_PORT = process.env.PORT || 8080;
+
+// Handlebars date format helper
+const formatDate = function(dateObj) {
+    let year = dateObj.getFullYear();
+    let month = (dateObj.getMonth() + 1).toString();
+    let day = dateObj.getDate().toString();
+    return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+};
 
 // Middleware to parse URL-encoded data (for form submissions)
 app.use(express.urlencoded({ extended: true }));
@@ -38,15 +35,14 @@ const handlebars = exphbs.create({
   helpers: {
     navLink: function(url, options) {
       return `<li class="nav-item">
-                <a class="nav-link ${url === app.locals.activeRoute ? "active" : ""}" href="${url}">
-                  ${options.fn(this)}
-                </a>
+                <a class="nav-link ${url === app.locals.activeRoute ? "active" : ""}" href="${url}">${options.fn(this)}</a>
               </li>`;
     },
-    equal: function (lvalue, rvalue, options) {
+    equal: function(lvalue, rvalue, options) {
       if (arguments.length < 3) throw new Error("Handlebars Helper equal needs 2 parameters");
       return lvalue === rvalue ? options.fn(this) : options.inverse(this);
-    }
+    },
+    formatDate: formatDate  // Register the formatDate helper
   }
 });
 
@@ -56,13 +52,12 @@ app.set('view engine', '.hbs');
 
 // Cloudinary configuration
 cloudinary.config({
-  cloud_name: 'dfvcozpgh', 
-  api_key: '755688973366479',       
-  api_secret: 'ZjDenjLsuZcA9EJ9P-RXt1fJ-Lk', 
+  cloud_name: 'dfvcozpgh',
+  api_key: '755688973366479',
+  api_secret: 'ZjDenjLsuZcA9EJ9P-RXt1fJ-Lk',
   secure: true
 });
 
-// Multer configuration for handling file uploads (in-memory storage)
 const upload = multer();
 
 app.use(express.static('public'));
@@ -83,7 +78,6 @@ app.get("/shop", async (req, res) => {
 
   try {
     let items = [];
-
     if (req.query.category) {
       items = await storeService.getPublishedItemsByCategory(req.query.category);
     } else {
@@ -94,11 +88,11 @@ app.get("/shop", async (req, res) => {
     items.sort((a, b) => new Date(b.postDate) - new Date(a.postDate));
 
     let item = items[0];
-
     viewData.items = items;
     viewData.item = item;
   } catch (err) {
     viewData.message = "no results";
+    console.error('Error fetching items:', err);
   }
 
   try {
@@ -106,20 +100,22 @@ app.get("/shop", async (req, res) => {
     viewData.categories = categories;
   } catch (err) {
     viewData.categoriesMessage = "no results";
+    console.error('Error fetching categories:', err);
   }
 
   res.render("shop", { data: viewData });
 });
 
-// **New Route to Render Specific Item by ID**
+// Route to handle specific item by ID
 app.get("/shop/:id", async (req, res) => {
   let viewData = {};
 
   try {
-    let item = await storeService.getItemById(req.params.id); // Fetch item by ID
+    let item = await storeService.getItemById(req.params.id);
     viewData.item = item;
   } catch (err) {
-    viewData.message = "no results"; // Handle error if no item is found with the given ID
+    viewData.message = "no results"; // Handle error if no item is found
+    console.error('Error fetching item by ID:', err);
   }
 
   try {
@@ -127,38 +123,54 @@ app.get("/shop/:id", async (req, res) => {
     viewData.categories = categories;
   } catch (err) {
     viewData.categoriesMessage = "no results";
+    console.error('Error fetching categories:', err);
   }
 
   res.render("shop", { data: viewData });
 });
 
-// Get all items with filtering options
+// Updated /items route to handle "no results" and error handling
 app.get('/items', (req, res) => {
-  if (req.query.category) {
-    storeService.getItemsByCategory(req.query.category)
-      .then(data => res.render('items', { items: data }))
-      .catch(err => res.render('items', { message: 'no results' }));
-  } else if (req.query.minDate) {
-    storeService.getItemsByMinDate(req.query.minDate)
-      .then(data => res.render('items', { items: data }))
-      .catch(err => res.render('items', { message: 'no results' }));
-  } else {
-    storeService.getAllItems()
-      .then(data => res.render('items', { items: data }))
-      .catch(err => res.render('items', { message: 'no results' }));
-  }
+  storeService.getAllItems()
+    .then(data => {
+      if (data.length > 0) {
+        res.render('items', { items: data });
+      } else {
+        res.render('items', { message: 'No results found' });
+      }
+    })
+    .catch(err => {
+      console.error('Error fetching items:', err);
+      res.render('items', { message: 'Error retrieving items' });
+    });
 });
 
-// Get categories
+// Updated /categories route to handle "no results" and error handling
 app.get('/categories', (req, res) => {
   storeService.getCategories()
-    .then(data => res.render("categories", { categories: data }))
-    .catch(err => res.render("categories", { message: "no results" }));
+    .then(data => {
+      if (data.length > 0) {
+        res.render('categories', { categories: data });
+      } else {
+        res.render('categories', { message: 'No results found' });
+      }
+    })
+    .catch(err => {
+      console.error('Error fetching categories:', err);
+      res.render('categories', { message: 'Error retrieving categories' });
+    });
 });
 
-// Route to render the add item page using Handlebars
+// Route to render the add item page with categories
 app.get('/items/add', (req, res) => {
-  res.render('addPost', { title: "Add Item" });
+  storeService.getCategories()
+    .then(data => {
+      res.render('addPost', { categories: data });
+    })
+    .catch(err => {
+      res.render('addPost', { categories: [] });
+      console.error('Error fetching categories:', err);
+    });
 });
 
 // Route to handle adding an item
@@ -168,7 +180,10 @@ app.post('/items/add', upload.single("featureImage"), (req, res) => {
 
     storeService.addItem(req.body)
       .then(() => res.redirect('/items'))
-      .catch(err => res.status(500).send("Error adding item: " + err));
+      .catch(err => {
+        console.error('Error adding item:', err);
+        res.status(500).send("Error adding item: " + err);
+      });
   };
 
   if (req.file) {
@@ -193,11 +208,46 @@ app.post('/items/add', upload.single("featureImage"), (req, res) => {
   }
 });
 
-// Route to get an item by ID
-app.get('/item/:id', (req, res) => {
-  storeService.getItemById(req.params.id)
-    .then(item => res.json(item))
-    .catch(err => res.status(404).json({ message: err }));
+// Route to render the add category page
+app.get('/categories/add', (req, res) => {
+  res.render('addCategory', { title: "Add Category" });
+});
+
+// Route to handle adding a new category
+app.post('/categories/add', (req, res) => {
+  storeService.addCategory(req.body)
+    .then(() => res.redirect('/categories'))
+    .catch(err => {
+      console.error('Error adding category:', err);
+      res.status(500).send("Error adding category: " + err);
+    });
+});
+
+// Route to delete a category by ID
+app.get('/categories/delete/:id', (req, res) => {
+  const categoryId = req.params.id;
+  storeService.deleteCategoryById(categoryId)
+    .then(() => {
+      res.redirect('/categories');
+    })
+    .catch((err) => {
+      console.error('Error deleting category:', err);
+      res.status(500).send('Unable to Remove Category / Category not found: ' + err);
+    });
+});
+
+// Route to delete an item by ID
+app.get('/items/delete/:id', (req, res) => {
+  const itemId = req.params.id;
+
+  storeService.deletePostById(itemId)
+    .then(() => {
+      res.redirect('/items');
+    })
+    .catch((err) => {
+      console.error('Error deleting item:', err);
+      res.status(500).send('Unable to Remove Item / Item not found: ' + err);
+    });
 });
 
 // 404 error handler

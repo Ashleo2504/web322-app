@@ -3,31 +3,36 @@
         <h2>Items</h2>
         <hr />
 
+        {{#if message}}
+        <div class="alert alert-danger">
+            {{message}}
+        </div>
+        {{/if}}
+
         {{#if items.length}}
         <div class="table-responsive">
-            <table class="table">
+            <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th>Item ID</th>
-                        <th>Title</th>
-                        <th>Post Date</th>
-                        <th>Price</th>
+                        <th>Item Name</th>
                         <th>Category</th>
-                        <th>Published</th>
+                        <th>Price</th>
+                        <th>Actions</th> <!-- New header for actions -->
                     </tr>
                 </thead>
                 <tbody>
                     {{#each items}}
-                        <tr>
-                            <td>{{this.id}}</td>
-                            <td>{{this.title}}</td>
-                            <td>{{this.postDate}}</td>
-                            <td>${{this.price}}</td>
-                            <td>
-                                <a href="/items?category={{this.category}}">{{this.category}}</a>
-                            </td>
-                            <td>{{#if this.published}}✅{{else}}❌{{/if}}</td>
-                        </tr>
+                    <tr>
+                        <td>{{this.title}}</td>
+                        <td>
+                            <a href="/items?category={{this.category}}">{{this.category}}</a>
+                        </td>
+                        <td>${{this.price}}</td>
+                        <td>
+                            <!-- "Remove" button that links to the delete route -->
+                            <a href="/items/delete/{{this.id}}" class="btn btn-danger">Remove</a>
+                        </td>
+                    </tr>
                     {{/each}}
                 </tbody>
             </table>
@@ -37,5 +42,8 @@
             <strong>{{message}}</strong>
         </div>
         {{/if}}
+
+        <!-- Button to Add Item -->
+        <a href="/items/add" class="btn btn-success pull-right">Add Item</a>
     </div>
 </div>
