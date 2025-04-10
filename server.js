@@ -1,3 +1,14 @@
+/*********************************************************************************
+WEB322 – Assignment 05
+I declare that this assignment is my own work in accordance with Seneca Academic Policy. No part
+* of this assignment has been copied manually or electronically from any other source (including 3rd party web sites) or distributed to other students.
+Name: Dev Kumar Bachchan
+Student ID: 123065237
+Date: 9-04-2025
+Cyclic Web App URL: https://vercel.com/ashleo2504s-projects/web322-app-qdfi
+GitHub Repository URL: https://github.com/Ashleo2504/web322-app.git
+********************************************************************************/
+
 const storeService = require('./store-service');
 const express = require('express');
 const multer = require("multer");
