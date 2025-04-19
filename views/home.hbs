@@ -1,0 +1,120 @@
+<!-- Load Font Awesome for icons -->
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+
+<!-- Main container for page content -->
+<div class="container mt-5">
+
+    <!-- Hero section / welcome banner -->
+    <div class="jumbotron text-center bg-light p-5 rounded">
+        <h1 class="display-4">
+            Welcome to this E-commerce Store
+        </h1>
+        <p class="lead">
+            Discover amazing products in our collection
+        </p>
+        <hr class="my-4">
+
+        <!-- Three feature cards below the banner -->
+        <div class="row">
+
+            <!-- Browse Products card -->
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <!-- Icon and card title -->
+                        <h5 class="card-title">
+                            <i class="fas fa-box-open fa-2x mb-3"></i>
+                        </h5>
+                        <h4 class="card-subtitle mb-3">Browse Products</h4>
+                        <p class="card-text">Explore our wide range of items</p>
+                        <a href="/items" class="btn btn-primary">View All Items</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shop by Category card -->
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fas fa-tags fa-2x mb-3"></i>
+                        </h5>
+                        <h4 class="card-subtitle mb-3">Shop by Category</h4>
+                        <p class="card-text">Find products by category</p>
+                        <a href="/categories" class="btn btn-primary">View Categories</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- About Us card -->
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fas fa-info-circle fa-2x mb-3"></i>
+                        </h5>
+                        <h4 class="card-subtitle mb-3">About Us</h4>
+                        <p class="card-text">Learn more about our store</p>
+                        <a href="/about" class="btn btn-primary">About Page</a>
+                    </div>
+                </div>
+            </div>
+
+        </div> <!-- End of row with feature cards -->
+
+    </div> <!-- End of jumbotron -->
+
+    <!-- Featured Items section -->
+    <div class="row mt-5">
+        <div class="col-md-12">
+
+            <!-- Section heading -->
+            <h2 class="text-center mb-4">
+                Featured Items
+            </h2>
+
+            <div class="row">
+
+                <!-- Handlebars loop to display each featured item -->
+                {{#each featuredItems}}
+
+                <!-- Individual featured item card -->
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <!-- If the item has a feature image, display it -->
+                        {{#if this.featureImage}}
+                        <img src="{{this.featureImage}}" class="card-img-top" alt="{{this.title}}">
+                        {{/if}}
+
+                        <div class="card-body">
+                            <!-- Display item title -->
+                            <h5 class="card-title">{{this.title}}</h5>
+
+                            <!-- Truncate the item description to 100 characters -->
+                            <p class="card-text">{{truncate this.body 100}}</p>
+
+                            <!-- Show price -->
+                            <p class="text-muted">${{this.price}}</p>
+
+                            <!-- Link to view the item's details -->
+                            <a href="/shop/{{this.id}}" class="btn btn-outline-primary">View Details</a>
+                        </div>
+                    </div>
+                </div>
+
+                {{else}}
+
+                <!-- If there are no featured items, show a friendly message -->
+                <div class="col-12 text-center">
+                    <p class="text-muted">No featured items available</p>
+                </div>
+
+                {{/each}}
+            </div> <!-- End of featured items row -->
+
+        </div>
+    </div> <!-- End of Featured Items section -->
+
+</div> <!-- End of main container -->

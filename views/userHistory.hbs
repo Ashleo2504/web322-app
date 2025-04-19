@@ -1,0 +1,25 @@
+<!-- Display the logged-in user's username and email at the top of the page -->
+<h2>{{session.user.userName}} ({{session.user.email}}) History</h2>
+
+<!-- Bootstrap-styled table to display the login history -->
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <!-- Column headers -->
+      <th>Login Date/Time</th>
+      <th>Client Information</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- Loop through each entry in the user's login history -->
+    {{#each session.user.loginHistory}}
+      <tr>
+        <!-- Display the login timestamp -->
+        <td>{{this.dateTime}}</td>
+
+        <!-- Display the user agent string (browser, device info, etc.) -->
+        <td>{{this.userAgent}}</td>
+      </tr>
+    {{/each}}
+  </tbody>
+</table>

@@ -1,0 +1,72 @@
+<!-- Heading for the user registration page -->
+<h2>User Registration</h2>
+
+<!-- If registration was successful, show success message and link to login -->
+{{#if successMessage}}
+  <div class="alert alert-success">
+    <strong>Success:</strong> {{successMessage}}
+  </div>
+
+  <!-- Button to take the user to the login page -->
+  <a class="btn btn-success pull-right" href="/login">Proceed to Log in</a><br /><br /><br />
+
+{{else}}
+  <!-- If there is an error message (e.g., username taken or password mismatch), display it -->
+  {{#if errorMessage}}  
+    <div class="alert alert-danger">
+      <strong>Error:</strong> {{errorMessage}}
+    </div>
+  {{/if}}
+
+  <!-- Registration form that sends a POST request to the /register route -->
+  <form method="POST" action="/register">
+
+    <!-- Input for user name -->
+    <div class="form-group">
+      <input 
+        type="text" 
+        name="userName" 
+        placeholder="User Name" 
+        class="form-control" 
+        value="{{userName}}" 
+        required
+      >
+    </div>
+
+    <!-- Input for password -->
+    <div class="form-group">
+      <input 
+        type="password" 
+        name="password" 
+        placeholder="Password" 
+        class="form-control" 
+        required
+      >
+    </div>
+
+    <!-- Input for confirming the password -->
+    <div class="form-group">
+      <input 
+        type="password" 
+        name="password2" 
+        placeholder="Confirm Password" 
+        class="form-control" 
+        required
+      >
+    </div>
+
+    <!-- Input for email address -->
+    <div class="form-group">
+      <input 
+        type="email" 
+        name="email" 
+        placeholder="Email Address" 
+        class="form-control" 
+        required
+      >
+    </div>
+
+    <!-- Submit button to register the user -->
+    <button type="submit" class="btn btn-primary">Register</button>
+  </form>
+{{/if}}
